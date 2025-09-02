@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweet Tooth Rush</title>
-    <!-- Use Tailwind CSS for base styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -19,15 +18,17 @@
             min-height: 100vh;
             text-align: center;
             position: relative;
+            margin: 0;
+            overflow: hidden;
         }
 
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative; /* Set position to relative for proper button placement */
+            position: relative;
         }
-        
+
         canvas {
             border: 2px solid #00FF00;
             background: #0A0A0A;
@@ -55,22 +56,35 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-            color: #00FF00; /* Text color changes to green on hover */
+            color: #00FF00;
+        }
+        
+        .character-image {
+            width: 60px;
+            height: 60px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+            border-radius: 8px;
         }
 
-        #playAgainBtn, #reviveBtn, #startGameBtn, #nameInputContainer, #characterSelectContainer, #characterSelectionScreen, #difficultySelectContainer {
+        .character-image:hover {
+            border-color: #00FF00;
+            box-shadow: 0 0 10px #00FF00;
+        }
+
+        #playAgainBtn, #reviveBtn, #startGameBtn, #characterSelectContainer, #difficultySelectContainer {
             display: none;
             margin: 20px auto;
         }
-        
+
         #reviveBtn {
             background-color: #00FF00;
             color: black;
         }
-        
+
         #reviveBtn:hover {
             color: white;
-            box
         }
 
         #messageBox {
@@ -86,6 +100,7 @@
             z-index: 1000;
             text-align: center;
             display: none;
+            border-radius: 12px;
         }
 
         @keyframes flash {
@@ -97,13 +112,33 @@
         .flash {
             animation: flash 0.5s ease-in-out 2;
         }
-        
+
         #highScoreTableContainer {
-            border: 2px solid #00FF00;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00FF00;
+            color: #00FF00;
+            font-family: 'Press Start 2P', cursive;
+            z-index: 1000;
+            text-align: center;
+            display: none;
+            width: 80%;
+            max-width: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 12px;
         }
         
+        #highScoreTableContainer h3 {
+            color: #FF00A0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
         #highScoreTable {
             width: 100%;
             border-collapse: collapse;
@@ -111,58 +146,42 @@
         }
         
         #highScoreTable th, #highScoreTable td {
-            border-bottom: 1px solid #00FF00;
             padding: 8px;
-        }
-        
-        .character-image {
-            width: 100px;
-            height: 100px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: transform 0.2s;
+            border-bottom: 1px solid #00FF00;
+            text-align: left;
         }
 
-        .character-image:hover {
-            transform: scale(1.1);
-        }
-        
-        #mainMenuScreen {
+        #nameInputContainer {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9);
             border: 2px solid #00FF00;
             color: #00FF00;
             font-family: 'Press Start 2P', cursive;
             z-index: 1000;
             text-align: center;
-            width: 90%; /* Adjusted width */
-            max-width: 600px; /* Adjusted max-width */
+            display: none;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 12px;
         }
 
-        #genderSelectContainer, #characterSelectContainer, #difficultySelectContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%; /* Ensure these containers take up full width */
-            margin-top: 1rem;
-        }
-
-        #characterOptions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem; /* Added gap for spacing between images */
-            margin-top: 1rem;
+        #nameInputContainer input {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00FF00;
+            padding: 8px;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
         }
         
-        /* Pause Button and Menu */
         #pauseBtn, #infoBtn {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             font-weight: bold;
             cursor: pointer;
@@ -171,24 +190,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            line-height: 1; /* Reset line-height */
             font-size: 1.2rem;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
-        #pauseBtn > span, #infoBtn > span {
-             font-size: 1rem;
-        }
-        
         #pauseBtn {
             top: 30px;
             left: 30px;
             background-color: #DB2777;
             color: white;
         }
-        
+
         #pauseBtn:hover {
             background-color: #FF00A0;
-            box-shadow: 0 0 10px #00FF00;
+            box-shadow: 0 0 15px #FF00A0;
         }
 
         #infoBtn {
@@ -196,13 +211,16 @@
             right: 30px;
             background-color: #00FF00;
             color: black;
+            font-family: serif;
+            font-style: italic;
+            font-weight: bold;
         }
-        
+
         #infoBtn:hover {
             background-color: #00FF00;
-            box-shadow: 0 0 30px #00FF00;
+            box-shadow: 0 0 20px #00FF00;
         }
-        
+
         #pauseMenu {
             position: absolute;
             top: 50%;
@@ -218,6 +236,7 @@
             display: none;
             width: 80%;
             max-width: 400px;
+            border-radius: 12px;
         }
 
         #infoBox {
@@ -233,10 +252,11 @@
             z-index: 1000;
             text-align: left;
             display: none;
-            width: 80%; /* Smaller width */
-            max-width: 400px; /* Smaller max-width */
+            width: 80%;
+            max-width: 400px;
             max-height: 500px;
             overflow-y: auto;
+            border-radius: 12px;
         }
 
         .info-table {
@@ -250,8 +270,7 @@
             border-bottom: 1px solid #00FF00;
             text-align: left;
         }
-        
-        /* New CSS for the text and buttons inside the game container */
+
         .game-header {
             position: relative;
             width: 100%;
@@ -259,22 +278,22 @@
         }
 
         .game-title {
-            font-size: 1.5rem; /* Reduced font size for better fit */
+            font-size: 1.5rem;
         }
 
         .game-subtitle {
-            font-size: 0.75rem; /* Reduced font size for better fit */
+            font-size: 0.75rem;
         }
-        
+
         #splashScreen {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px; /* Fixed width to match canvas */
-            height: 400px; /* Fixed height to match canvas */
+            width: 600px;
+            height: 400px;
             background-color: #0A0A0A;
-            border: 2px solid #00FF00; /* Matching border */
+            border: 2px solid #00FF00;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -301,14 +320,6 @@
 
     <div id="splashScreen">
         <h1 class="splash-text">Click to Start</h1>
-        <!-- Insert your image or video here -->
-        <!-- Example image: -->
-        <!-- <img src="https://placehold.co/400x300/DB2777/white?text=Your+Image+Here" alt="Placeholder image" class="mt-8 rounded-lg" /> -->
-        <!-- Example video: -->
-        <!-- <video width="400" controls autoplay muted class="mt-8 rounded-lg">
-            <source src="your_video_file.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video> -->
     </div>
 
     <div class="game-container">
@@ -322,11 +333,9 @@
             <span id="reviveIndicator" style="display:none;">➕</span>
         </div>
         
-        <!-- Info Button and Pause Button -->
         <button id="infoBtn" style="display:none;">i</button>
         <button id="pauseBtn" style="display:none;">||</button>
 
-        <!-- Main menu screen -->
         <div id="mainMenuScreen" style="display:none;">
             <h2 class="text-3xl" style="color: #FF00A0;">Sweet Tooth Rush</h2>
             <div id="genderSelectContainer" class="mt-4">
@@ -340,7 +349,6 @@
             <div id="characterSelectContainer" style="display:none;" class="mt-4">
                 <p>Select your character:</p>
                 <div id="characterOptions" class="flex justify-center space-x-4 mt-2">
-                    <!-- Character images will be dynamically loaded here -->
                 </div>
             </div>
 
@@ -353,14 +361,12 @@
                 </div>
             </div>
 
-
-            <button id="startGameBtn" class="btn" style="display:none;">Ginger Bread Biscuits</button>
+            <button id="startGameBtn" class="btn" style="display:none;">Start Game</button>
             <button id="showScoresBtn" class="btn">Show High Scores</button>
         </div>
 
-        <!-- All other UI elements are still present but will be controlled by JS -->
-        <button id="playAgainBtn" class="btn">Play Again</p>
-        <button id="reviveBtn" class="btn">Revive?</p>
+        <button id="playAgainBtn" class="btn">Play Again</button>
+        <button id="reviveBtn" class="btn">Revive?</button>
         
         <div id="nameInputContainer">
             <p>You made it to the leaderboard! Enter your name:</p>
@@ -386,14 +392,12 @@
             <button id="closeMessageBtn" class="btn">OK</button>
         </div>
 
-        <!-- New Info Box -->
         <div id="infoBox">
             <h3 class="text-2xl" style="color: #FF00A0;">Game Information</h3>
             <div id="infoContent"></div>
             <button id="closeInfoBtn" class="btn mt-4">Close</button>
         </div>
 
-        <!-- New Pause Menu -->
         <div id="pauseMenu">
             <h3 class="text-2xl" style="color: #00FF00;">Game Paused</h3>
             <button id="resumeBtn" class="btn">Resume</button>
@@ -403,13 +407,12 @@
     </div>
 
     <script>
-        // Global variables for the game
+        // --- GAME VARIABLES ---
         let score = 0;
         let missed = 0;
         let gameOver = false;
         let gameSpeed = 2;
         let highScore = 0;
-        let gameInterval;
         let isPaused = false;
         const items = [];
         let itemsWithWeighting = [];
@@ -419,79 +422,59 @@
         let growTimer = null;
         let isMagnetActive = false;
         let magnetTimer = null;
-        let powerUpsUsed = 0;
-        let powerUpLimit = 2;
         let lastLevel = 0;
-        let canRevive = false; // Player must now collect grapes to get a revive
-        let reviveUsed = false; // New variable to track if revive has been used
-        let isNewHighScore = false;
-        const HIGHSCORE_THRESHOLD = 5000; // Updated high score threshold to 5000
+        let canRevive = false;
+        let reviveUsed = false;
+        const HIGHSCORE_THRESHOLD = 1000;
         let playerImageSrc = '';
         let companionImageSrc = '';
-        let companionDuration = 30000; // Default to Noob difficulty
+        let companionDuration = 30000;
         let growDuration = 15000;
         let magnetDuration = 7000;
-        let selectedDifficulty = 'noob'; // Track the selected difficulty
+        let selectedDifficulty = 'noob';
 
+        // --- IMAGE ASSETS ---
+        // Replaced local paths with web URLs to work in preview
         const characterImages = {
             boy: [
-                'https://placehold.co/100x100/3B82F6/white?text=Boy+1',
-                'https://placehold.co/100x100/3B82F6/white?text=Boy+2',
-                'https://placehold.co/100x100/3B82F6/white?text=Boy+3'
+                '../assets/boy1.png',
+                '../assets/boy3.png',
+                '../assets/boy4.png',
             ],
             girl: [
-                'https://placehold.co/100x100/EC4899/white?text=Girl+1',
-                'https://placehold.co/100x100/EC4899/white?text=Girl+2',
-                'https://placehold.co/100x100/EC4899/white?text=Girl+3'
+                '../assets/girl1.png',
+                '../assets/girl2.png',
+                '../assets/girl4.png',
             ]
         };
-        
+
         const companionImages = {
-            boy: 'https://placehold.co/50x50/EC4899/white?text=Girl',
-            girl: 'https://placehold.co/50x50/3B82F6/white?text=Boy'
+            boy: '../assets/girl5.png',
+            girl: '../assets/boy5.png',
         };
 
-        // Set the base URL for API calls. Use HTTPS for security.
-        const API_BASE_URL = 'https://your-server.com/Sweet_Treats/admin/'; 
-
-        // Save high score to local storage and optionally to the database
-        async function saveHighScore(newScore, playerName) {
-            // Update the single high score display
-            if (newScore > highScore) {
-                localStorage.setItem('highScore', newScore);
-                highScore = newScore;
-                const highScoreSpan = document.getElementById('high-score');
-                if (highScoreSpan) {
-                    highScoreSpan.textContent = highScore;
-                }
-            }
-
-            // Update the high score table
-            let highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
+        // --- HIGH SCORE LOGIC (LOCALSTORAGE ONLY) ---
+        function saveHighScore(newScore, playerName) {
+            let highScores = JSON.parse(localStorage.getItem('sweetToothRushScores') || '[]');
             highScores.push({ name: playerName, score: newScore });
             highScores.sort((a, b) => b.score - a.score);
             highScores = highScores.slice(0, 10); // Keep only top 10
-            localStorage.setItem('highScores', JSON.stringify(highScores));
+            localStorage.setItem('sweetToothRushScores', JSON.stringify(highScores));
         }
 
-        // Load high score from local storage and then sync with database
-        async function fetchHighScore() {
-            // Try to get high score from local storage first
-            const localHighScore = localStorage.getItem('highScore');
-            if (localHighScore !== null) {
-                highScore = parseInt(localHighScore, 10);
-                const highScoreSpan = document.getElementById('high-score');
-                if (highScoreSpan) {
-                    highScoreSpan.textContent = highScore;
-                }
+        function fetchHighScore() {
+            const localHighScores = JSON.parse(localStorage.getItem('sweetToothRushScores') || '[]');
+            if (localHighScores.length > 0) {
+                highScore = localHighScores[0].score;
+                document.getElementById('high-score').textContent = highScore;
             }
         }
 
         function displayHighScores() {
-            const highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
+            const localHighScores = JSON.parse(localStorage.getItem('sweetToothRushScores') || '[]');
             const tableBody = document.querySelector('#highScoreTable tbody');
             tableBody.innerHTML = '';
-            highScores.forEach((score, index) => {
+            localHighScores.forEach((score, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>${index + 1}</td><td>${score.name}</td><td>${score.score}</td>`;
                 tableBody.appendChild(row);
@@ -499,11 +482,12 @@
             document.getElementById('highScoreTableContainer').style.display = 'block';
         }
 
+        // --- GAME INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM ELEMENT REFERENCES ---
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const scoreSpan = document.getElementById('score');
-            const highScoreSpan = document.getElementById('high-score');
             const missedSpan = document.getElementById('missed');
             const reviveIndicator = document.getElementById('reviveIndicator');
             const playAgainBtn = document.getElementById('playAgainBtn');
@@ -525,36 +509,19 @@
             const highScoreTableContainer = document.getElementById('highScoreTableContainer');
             const closeTableBtn = document.getElementById('closeTableBtn');
             const showScoresBtn = document.getElementById('showScoresBtn');
-            const messageBox = document.getElementById('messageBox');
-            const messageText = document.getElementById('messageText');
-            const closeMessageBtn = document.getElementById('closeMessageBtn');
             const splashScreen = document.getElementById('splashScreen');
-            
-            // Pause Menu elements
             const pauseBtn = document.getElementById('pauseBtn');
             const pauseMenu = document.getElementById('pauseMenu');
             const resumeBtn = document.getElementById('resumeBtn');
             const returnToMenuBtn = document.getElementById('returnToMenuBtn');
-            
-            // New Info Box elements
             const infoBtn = document.getElementById('infoBtn');
             const infoBox = document.getElementById('infoBox');
             const closeInfoBtn = document.getElementById('closeInfoBtn');
             const infoContent = document.getElementById('infoContent');
 
-            // Show a message box
-            function showMessage(text) {
-                messageText.textContent = text;
-                messageBox.style.display = 'block';
-            }
-
-            closeMessageBtn.addEventListener('click', () => {
-                messageBox.style.display = 'none';
-            });
-
             fetchHighScore();
             
-            // Player character
+            // --- GAME OBJECTS ---
             const baker = {
                 x: canvas.width / 2 - 25,
                 y: canvas.height - 60,
@@ -564,7 +531,6 @@
                 isReady: false
             };
             
-            // Companion character for power-up
             const companion = {
                 x: 0,
                 y: canvas.height - 60,
@@ -574,56 +540,40 @@
                 isReady: false
             };
             
-            // Falling items with emojis and varied speeds
             const itemTypes = [
-                { name: 'fortune cookie', emoji: '🥠', score: 100, speed: 5, type: 'sweet' },
-                { name: 'cherry_pie', emoji: '🍒', score: 50, speed: 4, type: 'sweet' },
-                { name: 'ice_cream', emoji: '🍦', score: 20, speed: 3.5, type: 'sweet' },
-                { name: 'cupcake', emoji: '🧁', score: 10, speed: 3, type: 'sweet' },
-                { name: 'donut', emoji: '🍩', score: 5, speed: 2.5, type: 'sweet' },
-                { name: 'lollipop', emoji: '🍭', score: 3, speed: 2, type: 'sweet' },
-                { name: 'cookie', emoji: '🍪', score: 1, speed: 1.5, type: 'sweet' },
-                { name: 'apple', emoji: '🍎', score: 0, speed: 2, type: 'healthy', powerUp: 'Companion' },
-                { name: 'mushroom', emoji: '🍄', score: 0, speed: 3.5, type: 'grow', powerUp: 'Growth' },
-                { name: 'watermelon', emoji: '🍉', score: 0, speed: 4, type: 'magnet', powerUp: 'Magnet' },
-                { name: 'grapes', emoji: '🍇', score: 0, speed: 3.5, type: 'revive', powerUp: 'Revive' },
+                { name: 'Fortune Cookie', emoji: '🥠', score: 100, speed: 5, type: 'sweet' },
+                { name: 'Cherry Pie', emoji: '🍒', score: 50, speed: 4, type: 'sweet' },
+                { name: 'Ice Cream', emoji: '🍦', score: 20, speed: 3.5, type: 'sweet' },
+                { name: 'Cupcake', emoji: '🧁', score: 10, speed: 3, type: 'sweet' },
+                { name: 'Donut', emoji: '🍩', score: 5, speed: 2.5, type: 'sweet' },
+                { name: 'Lollipop', emoji: '🍭', score: 3, speed: 2, type: 'sweet' },
+                { name: 'Cookie', emoji: '🍪', score: 1, speed: 1.5, type: 'sweet' },
+                { name: 'Apple', emoji: '🍎', score: 0, speed: 2, type: 'healthy', powerUp: 'Companion' },
+                { name: 'Mushroom', emoji: '🍄', score: 0, speed: 3.5, type: 'grow', powerUp: 'Growth' },
+                { name: 'Watermelon', emoji: '🍉', score: 0, speed: 4, type: 'magnet', powerUp: 'Magnet' },
+                { name: 'Grapes', emoji: '🍇', score: 0, speed: 3.5, type: 'revive', powerUp: 'Revive' },
             ];
             
-            // Rebuilds the spawn pool with a new number of apples
             function updateItemSpawnPool() {
-                // Clear the old spawn pool
                 itemsWithWeighting = [];
-                const apple = itemTypes.find(t => t.type === 'healthy');
-                const grapes = itemTypes.find(t => t.type === 'revive');
-                const mushroom = itemTypes.find(t => t.type === 'grow');
-                const watermelon = itemTypes.find(t => t.type === 'magnet');
+                const sweetItems = itemTypes.filter(t => t.type === 'sweet');
+                const powerUpItems = itemTypes.filter(t => t.powerUp);
                 
-                // Add the sweet treats
-                itemsWithWeighting.push(...Array(10).fill(itemTypes.find(t => t.score === 1)));
-                itemsWithWeighting.push(...Array(8).fill(itemTypes.find(t => t.score === 3)));
-                itemsWithWeighting.push(...Array(6).fill(itemTypes.find(t => t.score === 5)));
-                itemsWithWeighting.push(...Array(4).fill(itemTypes.find(t => t.score === 10)));
-                itemsWithWeighting.push(...Array(3).fill(itemTypes.find(t => t.score === 20)));
-                itemsWithWeighting.push(...Array(2).fill(itemTypes.find(t => t.score === 50)));
-                itemsWithWeighting.push(...Array(1).fill(itemTypes.find(t => t.score === 100)));
-
-                // Add power-ups to the spawn pool
-                itemsWithWeighting.push(apple);
-                itemsWithWeighting.push(mushroom);
-                itemsWithWeighting.push(watermelon);
-                itemsWithWeighting.push(grapes);
+                const weights = { 1: 10, 3: 8, 5: 6, 10: 4, 20: 3, 50: 2, 100: 1 };
+                
+                for (const item of sweetItems) {
+                    itemsWithWeighting.push(...Array(weights[item.score]).fill(item));
+                }
+                itemsWithWeighting.push(...powerUpItems);
             }
             
-            // Draw functions
+            // --- DRAWING FUNCTIONS ---
             function drawBaker() {
                 let bakerWidth = isGrowingActive ? baker.width * 2 : baker.width;
                 let bakerHeight = isGrowingActive ? baker.height * 2 : baker.height;
 
                 if (baker.isReady) {
                     ctx.drawImage(baker.image, baker.x, baker.y, bakerWidth, bakerHeight);
-                } else {
-                    ctx.fillStyle = '#FF00A0';
-                    ctx.fillRect(baker.x, baker.y, bakerWidth, bakerHeight);
                 }
                 
                 if (isCompanionActive && companion.isReady) {
@@ -640,131 +590,87 @@
                 }
             }
             
-            // Game loop
+            // --- CORE GAME LOOP ---
             function updateGame() {
                 if (gameOver || isPaused) return;
                 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Check for new score checkpoints to award extra lives
+                // Award extra lives at score milestones
                 const scoreThresholds = [1000, 2000, 3000, 5000, 10000];
                 const currentLevelThreshold = scoreThresholds.find(t => score >= t && lastLevel < t);
-                
                 if (currentLevelThreshold) {
-                    // Only award a life if the player has missed at least one item.
                     if (missed > 0) {
-                        missed = Math.max(0, missed - 1); // Subtract 1 from missed
+                        missed = Math.max(0, missed - 1);
                         missedSpan.textContent = missed;
-                        // Add a class to make the missed counter flash
                         missedSpan.classList.add('flash');
-                        setTimeout(() => {
-                            missedSpan.classList.remove('flash');
-                        }, 1000);
+                        setTimeout(() => missedSpan.classList.remove('flash'), 1000);
                     }
                     lastLevel = currentLevelThreshold;
                 }
 
-                // Update difficulty and spawn pool based on score
-                let newGameSpeed = gameSpeed;
-                if (score >= 10000) {
-                    newGameSpeed = 6;
-                    powerUpLimit = 5;
-                } else if (score >= 5000) {
-                    newGameSpeed = 5;
-                    powerUpLimit = 4;
-                } else if (score >= 3000) {
-                    newGameSpeed = 4;
-                    powerUpLimit = 3;
-                } else if (score >= 2000) {
-                    newGameSpeed = 3.5;
-                    powerUpLimit = 2;
-                } else if (score >= 1000) {
-                    newGameSpeed = 3;
-                    powerUpLimit = 2;
-                } else {
-                    newGameSpeed = 2;
-                    powerUpLimit = 2;
-                }
+                // Increase game speed with score
+                let newGameSpeed = 2;
+                if (score >= 10000) newGameSpeed = 8;
+                else if (score >= 5000) newGameSpeed = 7;
+                else if (score >= 3000) newGameSpeed = 6;
+                else if (score >= 2000) newGameSpeed = 5;
+                else if (score >= 1000) newGameSpeed = 4;
+                gameSpeed = newGameSpeed;
                 
-                if (newGameSpeed !== gameSpeed) {
-                    gameSpeed = newGameSpeed;
-                    powerUpsUsed = 0; // Reset power-ups on new level
-                }
-                
-                // Move and draw items
+                // Update items
                 for (let i = items.length - 1; i >= 0; i--) {
                     let item = items[i];
 
-                    // If magnet is active, move items towards the baker's x-coordinate
+                    // Magnet effect
                     if (isMagnetActive) {
-                        if (item.x > baker.x + baker.width/2) {
-                            item.x -= 5;
-                        } else if (item.x < baker.x + baker.width/2) {
-                            item.x += 5;
-                        }
+                        const targetX = baker.x + (isGrowingActive ? baker.width : baker.width / 2);
+                        if (item.x > targetX) item.x -= 5;
+                        else if (item.x < targetX) item.x += 5;
                     }
 
-                    // Move item downwards as well
-                    item.y += item.speed;
+                    item.y += item.speed * (gameSpeed / 2.5); // Adjust speed based on gameSpeed
 
-                    // Check for collision with the "net" area or baker
+                    // Collision detection
                     let bakerWidth = isGrowingActive ? baker.width * 2 : baker.width;
-                    let bakerHeight = isGrowingActive ? baker.height * 2 : baker.height;
-
                     const bakerCollision = (item.y + 10 >= baker.y && item.x > baker.x && item.x < baker.x + bakerWidth);
                     const companionCollision = (isCompanionActive && item.y + 10 >= companion.y && item.x > companion.x && item.x < companion.x + companion.width);
 
                     if (bakerCollision || companionCollision) {
-                        if (item.type === 'healthy') {
-                            if (!isCompanionActive) {
-                                activateCompanionPowerUp();
-                                powerUpsUsed++;
-                            }
-                        } else if (item.type === 'grow') {
-                            if (!isGrowingActive) {
-                                activateGrowPowerUp();
-                            }
-                        } else if (item.type === 'magnet') {
-                            if (!isMagnetActive) {
-                                 activateMagnetPowerUp();
-                            }
-                        } else if (item.type === 'revive') {
-                            // Only grant revive if it hasn't been used this game
-                            if (!reviveUsed) {
-                                canRevive = true;
-                                reviveIndicator.style.display = 'inline';
-                            }
-                        } else {
+                        if (item.type === 'healthy' && !isCompanionActive) activateCompanionPowerUp();
+                        else if (item.type === 'grow' && !isGrowingActive) activateGrowPowerUp();
+                        else if (item.type === 'magnet' && !isMagnetActive) activateMagnetPowerUp();
+                        else if (item.type === 'revive' && !reviveUsed) {
+                            canRevive = true;
+                            reviveIndicator.style.display = 'inline';
+                        } else if (item.type === 'sweet') {
                             score += item.score;
                             scoreSpan.textContent = score;
                         }
-                        items.splice(i, 1); // Remove caught item
-                    } else if (item.y > canvas.height) {
-                        missed++;
-                        missedSpan.textContent = missed;
-                        items.splice(i, 1); // Remove missed item
-                        if (missed >= 5) {
-                            gameOver = true;
-                            if (canRevive) {
-                                reviveBtn.style.display = 'block';
-                                document.removeEventListener('mousemove', moveBaker); // Stop listening for mouse movement
-                            } else {
-                                if (score >= HIGHSCORE_THRESHOLD) {
-                                     isNewHighScore = true;
-                                     saveHighScore(score, "noob");
+                        items.splice(i, 1);
+                    } else if (item.y > canvas.height) { // Missed item
+                        if (item.type === 'sweet') {
+                            missed++;
+                            missedSpan.textContent = missed;
+                            if (missed >= 5) {
+                                gameOver = true;
+                                if (canRevive) {
+                                    reviveBtn.style.display = 'block';
+                                    document.removeEventListener('mousemove', moveBaker);
+                                } else {
+                                    showGameOverScreen();
                                 }
-                                document.removeEventListener('mousemove', moveBaker); // Stop listening for mouse movement
-                                showGameOverScreen();
                             }
                         }
+                        items.splice(i, 1);
                     }
                 }
                 
                 drawBaker();
                 drawItems();
-                
+
                 // Spawn new item
-                if (Math.random() < 0.03) { // Adjust for item spawn rate
+                if (Math.random() < 0.03) {
                     const type = itemsWithWeighting[Math.floor(Math.random() * itemsWithWeighting.length)];
                     items.push({
                         x: Math.random() * (canvas.width - 20) + 10,
@@ -778,56 +684,50 @@
 
                 requestAnimationFrame(updateGame);
             }
-
+            
+            // --- POWER-UP FUNCTIONS ---
             function activateCompanionPowerUp() {
                 isCompanionActive = true;
-                // Clear any existing timer to prevent overlapping
-                clearTimeout(companionTimer); 
-                companionTimer = setTimeout(() => {
-                    isCompanionActive = false;
-                    console.log("Companion power-up ended.");
-                }, companionDuration); // Duration based on difficulty
+                clearTimeout(companionTimer);
+                companionTimer = setTimeout(() => isCompanionActive = false, companionDuration);
             }
 
             function activateGrowPowerUp() {
                 isGrowingActive = true;
                 clearTimeout(growTimer);
-                growTimer = setTimeout(() => {
-                    isGrowingActive = false;
-                    console.log("Growth power-up ended.");
-                }, growDuration); // Duration based on difficulty
+                growTimer = setTimeout(() => isGrowingActive = false, growDuration);
             }
             
             function activateMagnetPowerUp() {
                 isMagnetActive = true;
                 clearTimeout(magnetTimer);
-                magnetTimer = setTimeout(() => {
-                    isMagnetActive = false;
-                    console.log("Magnet power-up ended.");
-                }, magnetDuration); // Duration based on difficulty
+                magnetTimer = setTimeout(() => isMagnetActive = false, magnetDuration);
             }
-
-            // Input handling with cursor movement
+            
+            // --- MOUSE MOVEMENT ---
             function moveBaker(e) {
                 const rect = canvas.getBoundingClientRect();
-                baker.x = e.clientX - rect.left - (isGrowingActive ? baker.width * 2 : baker.width) / 2;
+                baker.x = e.clientX - rect.left - (isGrowingActive ? baker.width : baker.width / 2);
             }
-            document.addEventListener('mousemove', moveBaker);
-
+            
+            // --- UI & SCREEN MANAGEMENT ---
             function showMainMenu() {
                 mainMenuScreen.style.display = 'block';
                 canvas.style.display = 'none';
-                highScoreTableContainer.style.display = 'none';
                 genderSelectContainer.style.display = 'block';
                 characterSelectContainer.style.display = 'none';
                 difficultySelectContainer.style.display = 'none';
                 startGameBtn.style.display = 'none';
-                infoBtn.style.display = 'none'; // Hide info button
-                pauseBtn.style.display = 'none'; // Hide pause button
-                pauseMenu.style.display = 'none'; // Hide pause menu
+                infoBtn.style.display = 'none';
+                pauseBtn.style.display = 'none';
+                pauseMenu.style.display = 'none';
+                nameInputContainer.style.display = 'none';
+                highScoreTableContainer.style.display = 'none';
+                playAgainBtn.style.display = 'none';
+                reviveBtn.style.display = 'none';
                 document.removeEventListener('mousemove', moveBaker);
             }
-            
+
             function showCharacterSelectScreen(gender) {
                 genderSelectContainer.style.display = 'none';
                 characterSelectContainer.style.display = 'block';
@@ -847,22 +747,16 @@
             }
 
             function setPowerUpDurations(difficulty) {
-                selectedDifficulty = difficulty; // Store the selected difficulty
+                selectedDifficulty = difficulty;
                 switch (difficulty) {
                     case 'noob':
-                        companionDuration = 30000;
-                        growDuration = 15000;
-                        magnetDuration = 7000;
+                        companionDuration = 30000; growDuration = 15000; magnetDuration = 7000;
                         break;
                     case 'player':
-                        companionDuration = 20000;
-                        growDuration = 10000;
-                        magnetDuration = 4000;
+                        companionDuration = 20000; growDuration = 10000; magnetDuration = 4000;
                         break;
                     case 'pro':
-                        companionDuration = 10000;
-                        growDuration = 5000;
-                        magnetDuration = 2000;
+                        companionDuration = 10000; growDuration = 5000; magnetDuration = 2000;
                         break;
                 }
                 difficultySelectContainer.style.display = 'none';
@@ -871,82 +765,47 @@
             
             function showGameOverScreen() {
                 canvas.style.display = 'none';
-                pauseBtn.style.display = 'none'; // Hide pause button
+                pauseBtn.style.display = 'none';
+                infoBtn.style.display = 'none';
                 if (score >= HIGHSCORE_THRESHOLD) {
                     nameInputContainer.style.display = 'block';
-                    document.getElementById('playerNameInput').value = '';
+                    playerNameInput.value = '';
                 } else {
                     playAgainBtn.style.display = 'block';
-                    displayHighScores();
                 }
-            }
-
-            function startGame() {
-                score = 0;
-                missed = 0;
-                gameOver = false;
-                isPaused = false;
-                isCompanionActive = false;
-                isGrowingActive = false;
-                isMagnetActive = false;
-                clearTimeout(companionTimer);
-                clearTimeout(growTimer);
-                clearTimeout(magnetTimer);
-                scoreSpan.textContent = score;
-                missedSpan.textContent = missed;
-                items.length = 0;
-                playAgainBtn.style.display = 'none';
-                reviveBtn.style.display = 'none';
-                nameInputContainer.style.display = 'none';
-                highScoreTableContainer.style.display = 'none';
-                characterSelectContainer.style.display = 'none';
-                mainMenuScreen.style.display = 'none';
-                difficultySelectContainer.style.display = 'none';
-                canvas.style.display = 'block';
-                infoBtn.style.display = 'block'; // Show info button when game starts
-                pauseBtn.style.display = 'block'; // Show pause button when game starts
-                document.addEventListener('mousemove', moveBaker);
-                gameSpeed = 2;
-                powerUpsUsed = 0;
-                powerUpLimit = 2;
-                canRevive = false; // Player starts without revive ability
-                reviveUsed = false; // Reset the revive flag for the new game
-                reviveIndicator.style.display = 'none'; // Hide revive indicator
-                lastLevel = 0;
-                updateItemSpawnPool();
-                baker.image.src = playerImageSrc;
-                baker.image.onload = () => { baker.isReady = true; startCountdown(); };
-                companion.image.src = companionImageSrc;
-                companion.image.onload = () => { companion.isReady = true; };
+                document.removeEventListener('mousemove', moveBaker);
+                fetchHighScore();
             }
             
-            // Restart game function
-            function restartGame() {
-                score = 0;
-                missed = 0;
-                gameOver = false;
-                isPaused = false;
-                isCompanionActive = false;
-                isGrowingActive = false;
-                isMagnetActive = false;
-                clearTimeout(companionTimer);
-                clearTimeout(growTimer);
-                clearTimeout(magnetTimer);
+            function resetGameVariables() {
+                score = 0; missed = 0; gameOver = false; isPaused = false;
+                isCompanionActive = false; isGrowingActive = false; isMagnetActive = false;
+                canRevive = false; reviveUsed = false; lastLevel = 0;
+                items.length = 0;
+                clearTimeout(companionTimer); clearTimeout(growTimer); clearTimeout(magnetTimer);
                 scoreSpan.textContent = score;
                 missedSpan.textContent = missed;
-                items.length = 0; // Clear all items
-                playAgainBtn.style.display = 'none';
-                reviveBtn.style.display = 'none';
-                pauseMenu.style.display = 'none'; // Hide pause menu
-                document.addEventListener('mousemove', moveBaker);
-                gameSpeed = 2; // Reset game speed
-                powerUpsUsed = 0; // Reset power-ups on restart
-                powerUpLimit = 2;
-                canRevive = false; // Reset revive power-up
-                reviveUsed = false; // Reset the revive flag for the new game
                 reviveIndicator.style.display = 'none';
-                lastLevel = 0; // Reset lastLevel on restart
-                updateItemSpawnPool(); // Reset the spawn pool on restart
+            }
+            
+            function startGame() {
+                resetGameVariables();
+                mainMenuScreen.style.display = 'none';
+                canvas.style.display = 'block';
+                infoBtn.style.display = 'block';
+                pauseBtn.style.display = 'block';
+                document.addEventListener('mousemove', moveBaker);
+                updateItemSpawnPool();
+                
+                baker.isReady = false;
+                companion.isReady = false;
+
+                if (playerImageSrc) {
+                    baker.image.src = playerImageSrc;
+                    baker.image.onload = () => { baker.isReady = true; };
+                    companion.image.src = companionImageSrc;
+                    companion.image.onload = () => { companion.isReady = true; };
+                }
                 startCountdown();
             }
 
@@ -954,7 +813,7 @@
                 isPaused = !isPaused;
                 if (isPaused) {
                     pauseMenu.style.display = 'block';
-                    infoBox.style.display = 'none'; // Close info box if open
+                    infoBox.style.display = 'none';
                     document.removeEventListener('mousemove', moveBaker);
                 } else {
                     pauseMenu.style.display = 'none';
@@ -962,88 +821,36 @@
                     requestAnimationFrame(updateGame);
                 }
             }
-            
-            // Function to generate and display the info table
+
             function showInfo() {
-                infoContent.innerHTML = '';
-                
-                // Close pause menu if open
-                pauseMenu.style.display = 'none';
-                
-                // The power-up durations from the original file
-                const originalDurations = {
-                    noob: { companion: 30000, growth: 15000, magnet: 7000 },
-                    player: { companion: 20000, growth: 10000, magnet: 4000 },
-                    pro: { companion: 10000, growth: 5000, magnet: 2000 }
-                };
-                
-                // Get all game items (sweet treats and power-ups)
-                const sweetItems = itemTypes.filter(item => item.type === 'sweet');
-                const powerUpItems = itemTypes.filter(item => item.powerUp);
-                const reviveItem = itemTypes.find(item => item.type === 'revive');
-
-                // Create a single table for the current difficulty
-                const tableHtml = `
-                    <div class="mb-4">
-                        <h4 class="text-xl" style="color: #00FF00;">${selectedDifficulty.toUpperCase()} Difficulty</h4>
-                        <table class="info-table">
-                            <thead>
-                                <tr><th>Item</th><th>Value</th></tr>
-                            </thead>
-                            <tbody>
-                                ${sweetItems.map(item => `
-                                    <tr>
-                                        <td>${item.emoji} ${item.name.replace(/_/g, ' ')}</td>
-                                        <td>${item.score} p</td>
-                                    </tr>
-                                `).join('')}
-                                ${powerUpItems.filter(item => item.type !== 'revive').map(item => {
-                                    const durationMs = originalDurations[selectedDifficulty][item.powerUp.toLowerCase()];
-                                    return `
-                                        <tr>
-                                            <td>${item.emoji} ${item.name.replace(/_/g, ' ')}</td>
-                                            <td>${durationMs / 1000}s</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                                ${reviveItem ? `
-                                    <tr>
-                                        <td>${reviveItem.emoji} ${reviveItem.name.replace(/_/g, ' ')}</td>
-                                        <td>1 rev</td>
-                                    </tr>
-                                ` : ''}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-
-                infoContent.innerHTML = tableHtml;
+                if (isPaused) return; 
                 infoBox.style.display = 'block';
+                const durations = {
+                    noob: { companion: 30, growth: 15, magnet: 7 },
+                    player: { companion: 20, growth: 10, magnet: 4 },
+                    pro: { companion: 10, growth: 5, magnet: 2 }
+                };
+
+                infoContent.innerHTML = `
+                    <h4 class="text-xl" style="color: #00FF00;">${selectedDifficulty.toUpperCase()} Difficulty</h4>
+                    <table class="info-table">
+                        <thead><tr><th>Item</th><th>Value</th></tr></thead>
+                        <tbody>
+                            ${itemTypes.filter(i => i.type === 'sweet').map(i => `<tr><td>${i.emoji} ${i.name}</td><td>${i.score} pts</td></tr>`).join('')}
+                            ${itemTypes.filter(i => i.powerUp && i.type !== 'revive').map(i => `<tr><td>${i.emoji} ${i.name}</td><td>${durations[selectedDifficulty][i.powerUp.toLowerCase()]}s</td></tr>`).join('')}
+                            <tr><td>🍇 Grapes</td><td>1 Revive</td></tr>
+                        </tbody>
+                    </table>`;
             }
 
-            // Add event listener to the Play Again button
-            playAgainBtn.addEventListener('click', () => {
-                playAgainBtn.style.display = 'none';
-                showMainMenu();
-            });
-            startGameBtn.addEventListener('click', () => {
-                startGame();
-            });
-            boyBtn.addEventListener('click', () => {
-                showCharacterSelectScreen('boy');
-            });
-            girlBtn.addEventListener('click', () => {
-                showCharacterSelectScreen('girl');
-            });
-            noobBtn.addEventListener('click', () => {
-                setPowerUpDurations('noob');
-            });
-            playerBtn.addEventListener('click', () => {
-                setPowerUpDurations('player');
-            });
-            proBtn.addEventListener('click', () => {
-                setPowerUpDurations('pro');
-            });
+            // --- EVENT LISTENERS ---
+            playAgainBtn.addEventListener('click', showMainMenu);
+            startGameBtn.addEventListener('click', startGame);
+            boyBtn.addEventListener('click', () => showCharacterSelectScreen('boy'));
+            girlBtn.addEventListener('click', () => showCharacterSelectScreen('girl'));
+            noobBtn.addEventListener('click', () => setPowerUpDurations('noob'));
+            playerBtn.addEventListener('click', () => setPowerUpDurations('player'));
+            proBtn.addEventListener('click', () => setPowerUpDurations('pro'));
             showScoresBtn.addEventListener('click', () => {
                 mainMenuScreen.style.display = 'none';
                 displayHighScores();
@@ -1053,7 +860,6 @@
                 saveHighScore(score, playerName);
                 nameInputContainer.style.display = 'none';
                 playAgainBtn.style.display = 'block';
-                displayHighScores();
             });
             closeTableBtn.addEventListener('click', () => {
                 highScoreTableContainer.style.display = 'none';
@@ -1061,7 +867,7 @@
             });
             reviveBtn.addEventListener('click', () => {
                 canRevive = false;
-                reviveUsed = true; // Revive has been used
+                reviveUsed = true;
                 reviveIndicator.style.display = 'none';
                 missed = 0;
                 missedSpan.textContent = missed;
@@ -1070,20 +876,17 @@
                 document.addEventListener('mousemove', moveBaker);
                 requestAnimationFrame(updateGame);
             });
-            
             infoBtn.addEventListener('click', showInfo);
-            closeInfoBtn.addEventListener('click', () => {
-                infoBox.style.display = 'none';
-            });
+            closeInfoBtn.addEventListener('click', () => infoBox.style.display = 'none');
             splashScreen.addEventListener('click', () => {
                 splashScreen.style.display = 'none';
                 showMainMenu();
-            });
+            }, { once: true });
             pauseBtn.addEventListener('click', togglePause);
             resumeBtn.addEventListener('click', togglePause);
             returnToMenuBtn.addEventListener('click', showMainMenu);
-
-            // Start countdown
+            
+            // --- STARTUP LOGIC ---
             function startCountdown() {
                 let count = 3;
                 const countdownInterval = setInterval(() => {
@@ -1091,33 +894,20 @@
                     ctx.fillStyle = '#FF00A0';
                     ctx.font = "bold 60px 'Press Start 2P'";
                     ctx.textAlign = 'center';
-                    ctx.fillText(count, canvas.width / 2, canvas.height / 2);
-
+                    ctx.textBaseline = 'middle';
+                    const text = count > 0 ? count : 'GO!';
+                    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
                     if (count === 0) {
                         clearInterval(countdownInterval);
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillText('GO!', canvas.width / 2, canvas.height / 2);
-                        setTimeout(() => {
-                            requestAnimationFrame(updateGame);
-                        }, 500);
+                        setTimeout(() => requestAnimationFrame(updateGame), 500);
                     }
                     count--;
                 }, 1000);
             }
             
-            // Initial call to set up the spawn pool
-            updateItemSpawnPool();
-            // We now show the splash screen first
-            // showMainMenu();
-
-            // Add this event listener to handle high score sync when back online
-            window.addEventListener('online', async () => {
-                console.log("Internet connection restored. Attempting to sync high score.");
-                const localHighScore = localStorage.getItem('highScore');
-                if (localHighScore) {
-                    await saveHighScore(parseInt(localHighScore, 10), "Guest");
-                }
-            });
+            canvas.style.display = 'none';
+            mainMenuScreen.style.display = 'none';
+            // Start on splash screen
         });
     </script>
 </body>
